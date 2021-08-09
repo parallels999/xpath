@@ -280,7 +280,8 @@ var xpath = (typeof exports === 'undefined') ? {} : exports;
         };
         this.reduceActions[28] = function (rhs) {
             rhs[0].locationPath = rhs[2];
-            rhs[0].locationPath.steps.unshift(new Step(Step.DESCENDANTORSELF, NodeTest.nodeTest, []));
+            rhs[0].locationPath.steps.push(new Step(Step.DESCENDANTORSELF, NodeTest.nodeTest, []));
+            rhs[0].locationPath.steps.reverse();
             return rhs[0];
         };
         this.reduceActions[29] = function (rhs) {
@@ -1272,9 +1273,10 @@ var xpath = (typeof exports === 'undefined') ? {} : exports;
                     var rhs = [];
                     for (var i = 0; i < num; i++) {
                         tokenType.pop();
-                        rhs.unshift(tokenValue.pop());
+                        rhs.push(tokenValue.pop());
                         state.pop();
                     }
+                    rhs.reverse();
                     var s_ = state[state.length - 1];
                     tokenType.push(XPathParser.productions[XPathParser.actionTableNumber[s].charCodeAt(a - 1) - 32][0]);
                     if (this.reduceActions[XPathParser.actionTableNumber[s].charCodeAt(a - 1) - 32] == undefined) {
@@ -1942,13 +1944,14 @@ var xpath = (typeof exports === 'undefined') ? {} : exports;
                 }
                 var st = [];
                 if (xpc.contextNode.firstChild != null) {
-                    st.unshift(xpc.contextNode.firstChild);
+                    st.push(xpc.contextNode.firstChild);
                 } else {
-                    st.unshift(xpc.contextNode.nextSibling);
+                    st.push(xpc.contextNode.nextSibling);
                 }
                 for (var m = xpc.contextNode.parentNode; m != null && m.nodeType != NodeTypes.DOCUMENT_NODE && m !== xpc.virtualRoot; m = m.parentNode) {
-                    st.unshift(m.nextSibling);
+                    st.push(m.nextSibling);
                 }
+                st.reverse();
                 do {
                     for (var m = st.pop(); m != null;) {
                         if (step.nodeTest.matches(m, xpc)) {
@@ -2033,7 +2036,7 @@ var xpath = (typeof exports === 'undefined') ? {} : exports;
                             break outer;
                         }
                         if (step.nodeTest.matches(m, xpc)) {
-                            newNodes.unshift(m);
+                            newNodes.push(m);
                         }
                         if (m.firstChild != null) {
                             st.push(m.nextSibling);
@@ -2043,6 +2046,7 @@ var xpath = (typeof exports === 'undefined') ? {} : exports;
                         }
                     }
                 }
+                newNodes.reverse();
                 break;
 
             case Step.PRECEDINGSIBLING:
